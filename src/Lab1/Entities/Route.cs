@@ -3,9 +3,9 @@ using System.Collections.ObjectModel;
 
 namespace Itmo.ObjectOrientedProgramming.Lab1.Entities;
 
-public class Route(ReadOnlyCollection<BaseRoutePart> routeParts, Speed forceModule)
+public class Route(ReadOnlyCollection<IBaseRoutePart> routeParts, Speed forceModule)
 {
-    public ReadOnlyCollection<BaseRoutePart> RouteParts { get; } = routeParts;
+    public ReadOnlyCollection<IBaseRoutePart> RouteParts { get; } = routeParts;
 
     public void ForceModuleCheck(Speed speed)
     {

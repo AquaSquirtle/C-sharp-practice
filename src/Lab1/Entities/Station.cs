@@ -2,15 +2,10 @@ using Itmo.ObjectOrientedProgramming.Lab1.Models;
 
 namespace Itmo.ObjectOrientedProgramming.Lab1.Entities;
 
-public class Station(Speed speedLimitModule, double workloadFactor) : BaseRoutePart
+public class Station(Speed speedLimitModule, double workloadFactor) : IBaseRoutePart
 {
-    public double WorkloadFactor { get; } = workloadFactor;
-
-    public override void CheckTrainSpeed(Speed speed)
+    public double Run(Train train, double precision)
     {
-        if (speedLimitModule.Value < speed.Value)
-        {
-            throw new ArgumentException("Speed must be less than speed limit of station.");
-        }
+        return speedLimitModule.Value >= train.Speed.Value ? workloadFactor : throw new ArgumentException("Speed must be less than speed limit of station.");
     }
 }

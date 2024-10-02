@@ -6,13 +6,13 @@ public class Distance
 
     public Distance(double distance)
     {
-        if (distance < 0) throw new ArgumentException("Distance must be greater than zero");
+        if (distance < 0) throw new ArgumentException("Distance cannot be negative");
         _distance = distance;
     }
 
     public double Value
     {
         get => _distance;
-        set => _distance = value < 0 ? throw new ArgumentException("Distance must be greater than zero") : value;
+        set => _distance = value < 0 ? throw new ArgumentException("Distance cannot be negative") : value;
     }
 }
