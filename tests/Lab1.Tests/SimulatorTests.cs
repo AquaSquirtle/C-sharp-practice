@@ -22,7 +22,8 @@ public class SimulatorTests
         var route = new Route(routeParts, new Speed(100));
         var sim = new Simulator(route, train, 10);
 
-        sim.FollowTheRoute();
+        Result result = sim.FollowTheRoute();
+        Assert.True(result is Result.Success);
     }
 
     [Fact]
@@ -39,8 +40,8 @@ public class SimulatorTests
         var route = new Route(routeParts, new Speed(100));
         var sim = new Simulator(route, train, 1);
 
-        ArgumentException exception = Assert.Throws<ArgumentException>(() => sim.FollowTheRoute());
-        Assert.Equal("Speed cannot be greater than the force module value.", exception.Message);
+        Result result = sim.FollowTheRoute();
+        Assert.True(result is Result.RouteForceModuleLimit);
     }
 
     [Fact]
@@ -59,7 +60,8 @@ public class SimulatorTests
         var route = new Route(routeParts, new Speed(100));
         var sim = new Simulator(route, train, 10);
 
-        sim.FollowTheRoute();
+        Result result = sim.FollowTheRoute();
+        Assert.True(result is Result.Success);
     }
 
     [Fact]
@@ -77,8 +79,8 @@ public class SimulatorTests
         var route = new Route(routeParts, new Speed(100));
         var sim = new Simulator(route, train, 1);
 
-        ArgumentException exception = Assert.Throws<ArgumentException>(() => sim.FollowTheRoute());
-        Assert.Equal("Speed must be less than speed limit of station.", exception.Message);
+        Result result = sim.FollowTheRoute();
+        Assert.True(result is Result.StationSpeedLimit);
     }
 
     [Fact]
@@ -96,8 +98,8 @@ public class SimulatorTests
         var route = new Route(routeParts, new Speed(1));
         var sim = new Simulator(route, train, 1);
 
-        ArgumentException exception = Assert.Throws<ArgumentException>(() => sim.FollowTheRoute());
-        Assert.Equal("Speed cannot be greater than the force module value.", exception.Message);
+        Result result = sim.FollowTheRoute();
+        Assert.True(result is Result.RouteForceModuleLimit);
     }
 
     [Fact]
@@ -120,7 +122,8 @@ public class SimulatorTests
         var route = new Route(routeParts, new Speed(2));
         var sim = new Simulator(route, train, 1);
 
-        sim.FollowTheRoute();
+        Result result = sim.FollowTheRoute();
+        Assert.True(result is Result.Success);
     }
 
     [Fact]
@@ -136,8 +139,8 @@ public class SimulatorTests
         var route = new Route(routeParts, new Speed(2));
         var sim = new Simulator(route, train, 1);
 
-        ArgumentException exception = Assert.Throws<ArgumentException>(() => sim.FollowTheRoute());
-        Assert.Equal("Speed cannot be negative", exception.Message);
+        Result result = sim.FollowTheRoute();
+        Assert.True(result is Result.NegativeSpeed);
     }
 
     [Theory]
@@ -156,7 +159,7 @@ public class SimulatorTests
         var route = new Route(routeParts, new Speed(2));
         var sim = new Simulator(route, train, 1);
 
-        ArgumentException exception = Assert.Throws<ArgumentException>(() => sim.FollowTheRoute());
-        Assert.Equal("Speed cannot be negative", exception.Message);
+        Result result = sim.FollowTheRoute();
+        Assert.True(result is Result.NegativeSpeed);
     }
 }

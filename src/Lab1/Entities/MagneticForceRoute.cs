@@ -4,26 +4,26 @@ namespace Itmo.ObjectOrientedProgramming.Lab1.Entities;
 
 public class MagneticForceRoute(Force force, Distance distance) : IBaseRoutePart
 {
-    public double Run(Train train, double precision)
+    public Result Run(Train train, double precision)
     {
         double timeSpent = 0;
-        double temp_distance = distance.Value;
+        double tempDistance = distance.Value;
 
-        train.ApplyForce(force);
+        train.TryApplyForce(force);
 
-        while (temp_distance > 0)
+        while (tempDistance > 0)
         {
             train.SpeedUp(precision);
             if (train.Speed.Value <= 0)
             {
-                throw new ArgumentException("Speed cannot be negative");
+                return new Result.NegativeSpeed();
             }
 
-            temp_distance -= train.Speed.Value * precision;
+            tempDistance -= train.Speed.Value * precision;
             ++timeSpent;
         }
 
-        train.ApplyForce(new Force(0));
-        return timeSpent;
+        train.TryApplyForce(new Force(0));
+        return new Result.Success(timeSpent);
     }
 }

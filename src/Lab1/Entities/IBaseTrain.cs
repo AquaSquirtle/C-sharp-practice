@@ -6,5 +6,5 @@ public interface IBaseTrain
 {
     public void SpeedUp(double precision);
 
-    public void ApplyForce(Force force);
+    public void TryApplyForce(Force force);
 }

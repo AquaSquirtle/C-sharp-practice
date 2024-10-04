@@ -1,6 +1,8 @@
+using Itmo.ObjectOrientedProgramming.Lab1.Models;
+
 namespace Itmo.ObjectOrientedProgramming.Lab1.Entities;
 
 public interface IBaseRoutePart
 {
-    public double Run(Train train, double precision);
+    public Result Run(Train train, double precision);
 }

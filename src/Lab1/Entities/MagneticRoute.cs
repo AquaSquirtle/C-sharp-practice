@@ -4,12 +4,12 @@ namespace Itmo.ObjectOrientedProgramming.Lab1.Entities;
 
 public class MagneticRoute(Distance distance) : IBaseRoutePart
 {
-    public double Run(Train train, double precision)
+    public Result Run(Train train, double precision)
     {
         double timeSpent = 0;
         if (train.Speed.Value <= 0)
         {
-            throw new ArgumentException("Speed cannot be negative");
+            return new Result.NegativeSpeed();
         }
 
         double tempDistance = distance.Value;
@@ -19,6 +19,6 @@ public class MagneticRoute(Distance distance) : IBaseRoutePart
             ++timeSpent;
         }
 
-        return timeSpent;
+        return new Result.Success(timeSpent);
     }
 }

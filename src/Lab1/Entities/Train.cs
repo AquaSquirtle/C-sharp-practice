@@ -8,11 +8,11 @@ public class Train(Force maxForce, Weight weight) : IBaseTrain
 
     public Speed Speed { get;  } = new Speed(0);
 
-    public void ApplyForce(Force force)
+    public void TryApplyForce(Force force)
     {
-        if (maxForce.Value < force.Value)
+        if (double.Abs(maxForce.Value) < double.Abs(force.Value))
         {
-            throw new ArgumentException("Applied force cannot be less than the max force.");
+            return;
         }
 
         _acceleration.Value = force.Value / weight.Value;

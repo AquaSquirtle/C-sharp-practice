@@ -7,11 +7,5 @@ public class Route(ReadOnlyCollection<IBaseRoutePart> routeParts, Speed forceMod
 {
     public ReadOnlyCollection<IBaseRoutePart> RouteParts { get; } = routeParts;
 
-    public void ForceModuleCheck(Speed speed)
-    {
-        if (speed.Value > forceModule.Value)
-        {
-            throw new ArgumentException("Speed cannot be greater than the force module value.");
-        }
-    }
+    public Speed ForceModule { get; } = forceModule;
 }
