@@ -6,7 +6,6 @@ public class Station(Speed speedLimitModule, double workloadFactor) : IBaseRoute
 {
     public Result Run(Train train, double precision)
     {
-        return speedLimitModule.Value >= train.Speed.Value ?
-            new Result.Success(workloadFactor) : new Result.StationSpeedLimit();
+        return speedLimitModule.Value >= train.Speed.Value ? new Result.Success(workloadFactor) : new Result.StationSpeedLimit();
     }
 }
