@@ -1,5 +1,4 @@
 using Itmo.ObjectOrientedProgramming.Lab2.EducationalProgramm.Models;
-using Itmo.ObjectOrientedProgramming.Lab2.Repository;
 using Itmo.ObjectOrientedProgramming.Lab2.Subject.Entities;
 
 namespace Itmo.ObjectOrientedProgramming.Lab2.EducationalProgramm.Entities;
@@ -8,9 +7,9 @@ public class EducationProgram : IEducationProgram
 {
     private static int _nextId;
 
-    public int Id { get; private set; }
+    public int Id { get; }
 
-    public string Name { get; set; } = string.Empty;
+    public string Name { get; private set; } = string.Empty;
 
     public int AuthorId { get; private set; }
 
@@ -23,8 +22,9 @@ public class EducationProgram : IEducationProgram
         Id = _nextId++;
     }
 
-    public void AddSubject(ISubject subject, int semesterId)
+    public void AddSubject(ISubject subject, int semesterId, int userId)
     {
+        CheckAccessibility(userId);
         Semester? semester = semesters.FirstOrDefault(semester => semester.SemestrNumber == semesterId);
         if (semester == null)
         {
@@ -40,9 +40,21 @@ public class EducationProgram : IEducationProgram
 
     public IEducationProgram Clone()
     {
-        var clone = (EducationProgram)MemberwiseClone();
-        clone.Id = _nextId++;
-        clone.BaseEducationalProgramId = Id;
+        var clone = new EducationProgram()
+        {
+            Name = this.Name,
+            AuthorId = this.AuthorId,
+            BaseEducationalProgramId = this.Id,
+        };
+
+        foreach (Semester semester in semesters)
+        {
+            foreach (ISubject subject in semester.Subjects)
+            {
+                clone.AddSubject(subject, semester.SemestrNumber, clone.AuthorId);
+            }
+        }
+
         return clone;
     }
 
@@ -63,7 +75,7 @@ public class EducationProgram : IEducationProgram
 
         public IEducationalProgramBuilder AddSubject(ISubject subject, int semesterId)
         {
-            _program.AddSubject(subject, semesterId);
+            _program.AddSubject(subject, semesterId, _program.AuthorId);
             return this;
         }
 
@@ -74,8 +86,17 @@ public class EducationProgram : IEducationProgram
         }
     }
 
-    public void Add()
+    public void ChangeName(string newName, int userId)
     {
-        DataRepository.Instance.AddEntity<IEducationProgram>(this);
+        CheckAccessibility(userId);
+        Name = newName;
+    }
+
+    private void CheckAccessibility(int userId)
+    {
+        if (userId != AuthorId)
+        {
+            throw new UnauthorizedAccessException("User does not have access to this entity.");
+        }
     }
 }

@@ -1,5 +1,4 @@
 using Itmo.ObjectOrientedProgramming.Lab2.LectureMaterial.Models;
-using Itmo.ObjectOrientedProgramming.Lab2.Repository;
 
 namespace Itmo.ObjectOrientedProgramming.Lab2.LectureMaterial.Entities;
 
@@ -7,13 +6,13 @@ public class LectureMaterials : ILectureMaterials
 {
     private static int _nextId;
 
-    public int Id { get; private set; }
+    public int Id { get; }
 
-    public string Name { get; set; } = string.Empty;
+    public string Name { get; private set; } = string.Empty;
 
-    public string ShortDescription { get; set; } = string.Empty;
+    public string ShortDescription { get; private set; } = string.Empty;
 
-    public string Content { get; set; } = string.Empty;
+    public string Content { get; private set; } = string.Empty;
 
     public int AuthorId { get; private set; }
 
@@ -60,14 +59,41 @@ public class LectureMaterials : ILectureMaterials
 
     public ILectureMaterials Clone()
     {
-        var clone = (LectureMaterials)MemberwiseClone();
-        clone.Id = _nextId++;
-        clone.BaseLectureMaterialId = Id;
+        var clone = new LectureMaterials
+        {
+            Name = this.Name,
+            ShortDescription = this.ShortDescription,
+            Content = this.Content,
+            AuthorId = this.AuthorId,
+            BaseLectureMaterialId = this.Id,
+        };
+
         return clone;
     }
 
-    public void Add()
+    public void ChangeName(string newName, int userId)
     {
-        DataRepository.Instance.AddEntity<ILectureMaterials>(this);
+        CheckAccessibility(userId);
+        Name = newName;
+    }
+
+    public void ChangeShortDescription(string newShortDescription, int userId)
+    {
+        CheckAccessibility(userId);
+        ShortDescription = newShortDescription;
+    }
+
+    public void ChangeContent(string newContent, int userId)
+    {
+        CheckAccessibility(userId);
+        Content = newContent;
+    }
+
+    private void CheckAccessibility(int userId)
+    {
+        if (userId != AuthorId)
+        {
+            throw new UnauthorizedAccessException("User does not have access to this entity.");
+        }
     }
 }

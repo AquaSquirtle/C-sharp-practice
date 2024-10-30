@@ -1,5 +1,4 @@
 using Itmo.ObjectOrientedProgramming.Lab2.LabWork.Models;
-using Itmo.ObjectOrientedProgramming.Lab2.Repository;
 
 namespace Itmo.ObjectOrientedProgramming.Lab2.LabWork.Entities;
 
@@ -7,11 +6,11 @@ public class LaboratoryWork : ILaboratoryWork
 {
     private static int _nextId;
 
-    public string Name { get; set; } = string.Empty;
+    public string Name { get; private set; } = string.Empty;
 
-    public string Description { get; set; } = string.Empty;
+    public string Description { get; private set; } = string.Empty;
 
-    public string EvaluationCriteria { get; set; } = string.Empty;
+    public string EvaluationCriteria { get; private set; } = string.Empty;
 
     public int Points { get; private set; }
 
@@ -19,7 +18,7 @@ public class LaboratoryWork : ILaboratoryWork
 
     public int? BaseLabWorkId { get; private set; }
 
-    public int Id { get; private set; }
+    public int Id { get; }
 
     private LaboratoryWork()
     {
@@ -68,14 +67,41 @@ public class LaboratoryWork : ILaboratoryWork
 
     public ILaboratoryWork Clone()
     {
-        var clone = (LaboratoryWork)MemberwiseClone();
-        clone.Id = _nextId++;
-        clone.BaseLabWorkId = Id;
+        var clone = new LaboratoryWork
+        {
+            Name = this.Name,
+            Description = this.Description,
+            EvaluationCriteria = this.EvaluationCriteria,
+            Points = this.Points,
+            AuthorId = this.AuthorId,
+            BaseLabWorkId = this.Id,
+        };
         return clone;
     }
 
-    public void Add()
+    public void ChangeName(string newName, int userId)
     {
-        DataRepository.Instance.AddEntity<ILaboratoryWork>(this);
+        CheckAccessibility(userId);
+        Name = newName;
+    }
+
+    public void ChangeDescription(string newDescription, int userId)
+    {
+        CheckAccessibility(userId);
+        Description = newDescription;
+    }
+
+    public void ChangeEvaluationCriteria(string newCriteria, int userId)
+    {
+        CheckAccessibility(userId);
+        EvaluationCriteria = newCriteria;
+    }
+
+    private void CheckAccessibility(int userId)
+    {
+        if (userId != AuthorId)
+        {
+            throw new UnauthorizedAccessException("User does not have access to this entity.");
+        }
     }
 }

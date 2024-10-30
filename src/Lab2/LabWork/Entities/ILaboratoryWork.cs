@@ -1,14 +1,12 @@
-using Itmo.ObjectOrientedProgramming.Lab2.Repository;
-
 namespace Itmo.ObjectOrientedProgramming.Lab2.LabWork.Entities;
 
-public interface ILaboratoryWork : IAddable
+public interface ILaboratoryWork
 {
-    string Name { get; set; }
+    string Name { get; }
 
-    string Description { get; set; }
+    string Description { get; }
 
-    string EvaluationCriteria { get; set; }
+    string EvaluationCriteria { get; }
 
     int Points { get; }
 
@@ -17,6 +15,12 @@ public interface ILaboratoryWork : IAddable
     int Id { get; }
 
     int? BaseLabWorkId { get; }
+
+    void ChangeName(string newName, int userId);
+
+    void ChangeDescription(string newDescription, int userId);
+
+    void ChangeEvaluationCriteria(string newCriteria, int userId);
 
     ILaboratoryWork Clone();
 }

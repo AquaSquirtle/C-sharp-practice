@@ -38,18 +38,18 @@ public class UniTests
             .AddSubject(subject2, 2)
             .SetName("Name")
             .Build();
-        plaform.Add(user);
-        plaform.Add(labWork);
-        plaform.Add(lectureMaterials);
-        plaform.Add(subject);
-        plaform.Add(subject2);
-        plaform.Add(program);
-        plaform.Add(user2);
-        Assert.Throws<FieldAccessException>(() => plaform.TryChangeLaboratoryWork(user2.Id, labWork.Id));
-        Assert.Throws<FieldAccessException>(() => plaform.TryChangeLectureMaterials(user2.Id, lectureMaterials.Id));
-        Assert.Throws<FieldAccessException>(() => plaform.TryChangeSubject(user2.Id, subject.Id));
-        Assert.Throws<FieldAccessException>(() => plaform.TryChangeSubject(user2.Id, subject2.Id));
-        Assert.Throws<FieldAccessException>(() => plaform.TryChangeEducationProgram(user2.Id, program.Id));
+        plaform.AddUser(user);
+        plaform.AddLaboratoryWork(labWork);
+        plaform.AddLectureMaterials(lectureMaterials);
+        plaform.AddSubject(subject);
+        plaform.AddSubject(subject2);
+        plaform.AddEducationProgram(program);
+        plaform.AddUser(user2);
+        Assert.Throws<UnauthorizedAccessException>(() => labWork.ChangeName("New name", user2.Id));
+        Assert.Throws<UnauthorizedAccessException>(() => lectureMaterials.ChangeName("New name", user2.Id));
+        Assert.Throws<UnauthorizedAccessException>(() => subject2.ChangeName("New name", user2.Id));
+        Assert.Throws<UnauthorizedAccessException>(() => subject.ChangeName("New name", user2.Id));
+        Assert.Throws<UnauthorizedAccessException>(() => program.ChangeName("New name", user2.Id));
     }
 
     [Fact]

@@ -1,20 +1,24 @@
-using Itmo.ObjectOrientedProgramming.Lab2.Repository;
-
 namespace Itmo.ObjectOrientedProgramming.Lab2.LectureMaterial.Entities;
 
-public interface ILectureMaterials : IAddable
+public interface ILectureMaterials
 {
     int Id { get; }
 
-    string Name { get; set; }
+    string Name { get; }
 
-    string ShortDescription { get; set; }
+    string ShortDescription { get; }
 
-    string Content { get; set; }
+    string Content { get; }
 
     int AuthorId { get; }
 
     int? BaseLectureMaterialId { get; }
+
+    void ChangeName(string newName, int userId);
+
+    void ChangeShortDescription(string newShortDescription, int userId);
+
+    void ChangeContent(string newContent, int userId);
 
     ILectureMaterials Clone();
 }

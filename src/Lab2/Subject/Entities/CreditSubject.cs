@@ -1,6 +1,5 @@
 using Itmo.ObjectOrientedProgramming.Lab2.LabWork.Entities;
 using Itmo.ObjectOrientedProgramming.Lab2.LectureMaterial.Entities;
-using Itmo.ObjectOrientedProgramming.Lab2.Repository;
 using Itmo.ObjectOrientedProgramming.Lab2.Subject.Models;
 
 namespace Itmo.ObjectOrientedProgramming.Lab2.Subject.Entities;
@@ -9,9 +8,9 @@ public class CreditSubject : ISubject
 {
     private static int _nextId;
 
-    public int Id { get; private set; }
+    public int Id { get; }
 
-    public string Name { get; set; } = string.Empty;
+    public string Name { get; private set; } = string.Empty;
 
     public int MinPoints { get; private set; }
 
@@ -52,13 +51,13 @@ public class CreditSubject : ISubject
 
         public CreditSubjectBuilder AddLabaratoryWork(ILaboratoryWork laboratoryWork)
         {
-            _subject.AddLabWork(laboratoryWork);
+            _subject.AddLabWork(laboratoryWork, _subject.AuthorId);
             return this;
         }
 
         public CreditSubjectBuilder AddLectureMaterial(ILectureMaterials lectureMaterials)
         {
-            _subject.AddLectureMaterial(lectureMaterials);
+            _subject.AddLectureMaterial(lectureMaterials, _subject.AuthorId);
             return this;
         }
 
@@ -85,26 +84,51 @@ public class CreditSubject : ISubject
         return points == 100;
     }
 
-    public void AddLabWork(ILaboratoryWork laboratoryWork)
+    public void AddLabWork(ILaboratoryWork laboratoryWork, int userId)
     {
+        CheckAccessibility(userId);
         _labWorks.Add(laboratoryWork);
     }
 
-    public void AddLectureMaterial(ILectureMaterials lectureMaterials)
+    public void AddLectureMaterial(ILectureMaterials lectureMaterials, int userId)
     {
+        CheckAccessibility(userId);
         _lectureMaterials.Add(lectureMaterials);
     }
 
     public ISubject Clone()
     {
-        var clone = (CreditSubject)MemberwiseClone();
-        clone.Id = _nextId++;
-        clone.BaseSubjectId = Id;
+        var clone = new CreditSubject
+        {
+            Name = this.Name,
+            MinPoints = this.MinPoints,
+            AuthorId = this.AuthorId,
+            BaseSubjectId = this.Id,
+        };
+        foreach (ILaboratoryWork lab in _labWorks)
+        {
+            clone.AddLabWork(lab, clone.AuthorId);
+        }
+
+        foreach (ILectureMaterials lectureMaterial in _lectureMaterials)
+        {
+            clone.AddLectureMaterial(lectureMaterial, clone.AuthorId);
+        }
+
         return clone;
     }
 
-    public void Add()
+    public void ChangeName(string newName, int userId)
     {
-        DataRepository.Instance.AddEntity<ISubject>(this);
+        CheckAccessibility(userId);
+        Name = newName;
+    }
+
+    private void CheckAccessibility(int userId)
+    {
+        if (userId != AuthorId)
+        {
+            throw new UnauthorizedAccessException("User does not have access to this entity.");
+        }
     }
 }

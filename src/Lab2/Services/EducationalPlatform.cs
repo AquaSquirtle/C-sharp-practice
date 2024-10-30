@@ -7,6 +7,7 @@ using Itmo.ObjectOrientedProgramming.Lab2.LectureMaterial.Models;
 using Itmo.ObjectOrientedProgramming.Lab2.Repository;
 using Itmo.ObjectOrientedProgramming.Lab2.Subject.Entities;
 using Itmo.ObjectOrientedProgramming.Lab2.Subject.Models;
+using Itmo.ObjectOrientedProgramming.Lab2.User.Entities;
 
 namespace Itmo.ObjectOrientedProgramming.Lab2.Services;
 
@@ -37,60 +38,68 @@ public class EducationalPlatform
         return new EducationProgram.EducationProgramBuilder();
     }
 
-    public void Add(IAddable addable)
+    public void AddLaboratoryWork(ILaboratoryWork labWork)
     {
-        addable.Add();
+        DataRepository.Instance.AddEntity(labWork);
     }
 
-    public ILaboratoryWork TryChangeLaboratoryWork(int userId, int id)
+    public void AddLectureMaterials(ILectureMaterials lectureMaterials)
     {
-        ILaboratoryWork? labWork = DataRepository.Instance.GetEntities<ILaboratoryWork>()
-            .FirstOrDefault(x => x.Id == id);
-        if (labWork is null)
-        {
-            throw new KeyNotFoundException($"The lab {id} does not exist");
-        }
-
-        return labWork.AuthorId == userId ?
-            labWork : throw new FieldAccessException("You cannot change the laboratory work");
+        DataRepository.Instance.AddEntity(lectureMaterials);
     }
 
-    public ILectureMaterials TryChangeLectureMaterials(int userId, int id)
+    public void AddSubject(ISubject subject)
     {
-        ILectureMaterials? lectureMaterials = DataRepository.Instance.GetEntities<ILectureMaterials>()
-            .FirstOrDefault(x => x.Id == id);
-        if (lectureMaterials is null)
-        {
-            throw new KeyNotFoundException($"The lecture materials {id} does not exist");
-        }
-
-        return lectureMaterials.AuthorId == userId ?
-            lectureMaterials : throw new FieldAccessException("You cannot change the lecture materials");
+        DataRepository.Instance.AddEntity(subject);
     }
 
-    public ISubject TryChangeSubject(int userId, int id)
+    public void AddEducationProgram(IEducationProgram educationProgram)
     {
-        ISubject? subject = DataRepository.Instance.GetEntities<ISubject>()
-            .FirstOrDefault(x => x.Id == id);
-        if (subject is null)
-        {
-            throw new KeyNotFoundException($"The subject {id} does not exist");
-        }
-
-        return subject.AuthorId == userId ?
-            subject : throw new FieldAccessException("You cannot change the subject");
+        DataRepository.Instance.AddEntity(educationProgram);
     }
 
-    public IEducationProgram TryChangeEducationProgram(int userId, int id)
+    public void AddUser(IPlatformUser user)
     {
-        IEducationProgram? program = DataRepository.Instance.GetEntities<IEducationProgram>()
-            .FirstOrDefault(x => x.Id == id);
-        if (program is null)
-        {
-            throw new KeyNotFoundException($"The education program {id} does not exist");
-        }
+        DataRepository.Instance.AddEntity(user);
+    }
 
-        return program.AuthorId == userId ?
-            program : throw new FieldAccessException("You cannot change the education program");
+    public ILaboratoryWork GetLaboratoryWork(int id)
+    {
+        ILaboratoryWork? laboratoryWork = DataRepository.Instance
+            .GetEntities<ILaboratoryWork>()
+            .FirstOrDefault(x => x.Id == id);
+        return laboratoryWork is null
+            ? throw new KeyNotFoundException($"The laboratory work {id} does not exist")
+            : laboratoryWork;
+    }
+
+    public ILectureMaterials GetLectureMaterials(int id)
+    {
+        ILectureMaterials? lectureMaterials = DataRepository.Instance
+            .GetEntities<ILectureMaterials>()
+            .FirstOrDefault(x => x.Id == id);
+        return lectureMaterials is null
+            ? throw new KeyNotFoundException($"The lecture materials {id} does not exist")
+            : lectureMaterials;
+    }
+
+    public ISubject GetSubject(int id)
+    {
+        ISubject? subject = DataRepository.Instance
+            .GetEntities<ISubject>()
+            .FirstOrDefault(x => x.Id == id);
+        return subject is null
+            ? throw new KeyNotFoundException($"The lecture materials {id} does not exist")
+            : subject;
+    }
+
+    public IEducationProgram GetEducationProgram(int id)
+    {
+        IEducationProgram? program = DataRepository.Instance
+            .GetEntities<IEducationProgram>()
+            .FirstOrDefault(x => x.Id == id);
+        return program is null
+            ? throw new KeyNotFoundException($"The lecture materials {id} does not exist")
+            : program;
     }
 }

@@ -1,14 +1,13 @@
 using Itmo.ObjectOrientedProgramming.Lab2.LabWork.Entities;
 using Itmo.ObjectOrientedProgramming.Lab2.LectureMaterial.Entities;
-using Itmo.ObjectOrientedProgramming.Lab2.Repository;
 
 namespace Itmo.ObjectOrientedProgramming.Lab2.Subject.Entities;
 
-public interface ISubject : IAddable
+public interface ISubject
 {
     int Id { get; }
 
-    string Name { get; set; }
+    string Name { get; }
 
     int AuthorId { get; }
 
@@ -16,9 +15,11 @@ public interface ISubject : IAddable
 
     bool CheckAmountOfPoints();
 
-    public void AddLabWork(ILaboratoryWork laboratoryWork);
+    void AddLabWork(ILaboratoryWork laboratoryWork, int userId);
 
-    public void AddLectureMaterial(ILectureMaterials lectureMaterials);
+    void AddLectureMaterial(ILectureMaterials lectureMaterials, int userId);
 
-    public ISubject Clone();
+    void ChangeName(string newName, int userId);
+
+    ISubject Clone();
 }
