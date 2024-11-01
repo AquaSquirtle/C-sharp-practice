@@ -1,12 +1,11 @@
 using Itmo.ObjectOrientedProgramming.Lab2.EducationalProgramm.Models;
+using Itmo.ObjectOrientedProgramming.Lab2.Entity;
 using Itmo.ObjectOrientedProgramming.Lab2.Subject.Entities;
 
 namespace Itmo.ObjectOrientedProgramming.Lab2.EducationalProgramm.Entities;
 
 public class EducationProgram : IEducationProgram
 {
-    private static int _nextId;
-
     public int Id { get; }
 
     public string Name { get; private set; } = string.Empty;
@@ -19,7 +18,7 @@ public class EducationProgram : IEducationProgram
 
     private EducationProgram()
     {
-        Id = _nextId++;
+        Id = EntityCounter<IEducationProgram>.Next();
     }
 
     public void AddSubject(ISubject subject, int semesterId, int userId)

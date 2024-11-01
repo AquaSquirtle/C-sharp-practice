@@ -1,11 +1,10 @@
+using Itmo.ObjectOrientedProgramming.Lab2.Entity;
 using Itmo.ObjectOrientedProgramming.Lab2.LabWork.Models;
 
 namespace Itmo.ObjectOrientedProgramming.Lab2.LabWork.Entities;
 
 public class LaboratoryWork : ILaboratoryWork
 {
-    private static int _nextId;
-
     public string Name { get; private set; } = string.Empty;
 
     public string Description { get; private set; } = string.Empty;
@@ -22,7 +21,7 @@ public class LaboratoryWork : ILaboratoryWork
 
     private LaboratoryWork()
     {
-        Id = _nextId++;
+        Id = EntityCounter<ILaboratoryWork>.Next();
     }
 
     public class LabWorkBuilder : ILabWorkBuilder

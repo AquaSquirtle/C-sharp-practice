@@ -1,19 +1,17 @@
-using Itmo.ObjectOrientedProgramming.Lab2.Repository;
+using Itmo.ObjectOrientedProgramming.Lab2.Entity;
 using Itmo.ObjectOrientedProgramming.Lab2.User.Models;
 
 namespace Itmo.ObjectOrientedProgramming.Lab2.User.Entities;
 
 public class PlatformUser : IPlatformUser
 {
-    private static int _nextId;
-
     public int Id { get; private set; }
 
     public string Name { get; private set; } = "Undefined";
 
     private PlatformUser()
     {
-        Id = _nextId++;
+        Id = EntityCounter<IPlatformUser>.Next();
     }
 
     public class UserBuilder : IUserBuilder
@@ -30,10 +28,5 @@ public class PlatformUser : IPlatformUser
         {
             return _platformUser;
         }
-    }
-
-    public void Add()
-    {
-        DataRepository.Instance.AddEntity<IPlatformUser>(this);
     }
 }

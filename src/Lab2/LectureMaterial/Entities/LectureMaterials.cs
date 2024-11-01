@@ -1,11 +1,10 @@
+using Itmo.ObjectOrientedProgramming.Lab2.Entity;
 using Itmo.ObjectOrientedProgramming.Lab2.LectureMaterial.Models;
 
 namespace Itmo.ObjectOrientedProgramming.Lab2.LectureMaterial.Entities;
 
 public class LectureMaterials : ILectureMaterials
 {
-    private static int _nextId;
-
     public int Id { get; }
 
     public string Name { get; private set; } = string.Empty;
@@ -20,7 +19,7 @@ public class LectureMaterials : ILectureMaterials
 
     private LectureMaterials()
     {
-        Id = _nextId++;
+        Id = EntityCounter<ILectureMaterials>.Next();
     }
 
     public class LectureMaterialBuilder : ILectureMaterialBuilder

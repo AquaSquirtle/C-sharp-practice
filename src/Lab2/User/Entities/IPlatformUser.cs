@@ -1,8 +1,8 @@
+using Itmo.ObjectOrientedProgramming.Lab2.Entity;
+
 namespace Itmo.ObjectOrientedProgramming.Lab2.User.Entities;
 
-public interface IPlatformUser
+public interface IPlatformUser : IEntity<IPlatformUser>
 {
-    int Id { get; }
-
     string Name { get; }
 }

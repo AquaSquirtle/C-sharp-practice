@@ -1,7 +1,7 @@
 using Itmo.ObjectOrientedProgramming.Lab2.EducationalProgramm.Entities;
 using Itmo.ObjectOrientedProgramming.Lab2.LabWork.Entities;
 using Itmo.ObjectOrientedProgramming.Lab2.LectureMaterial.Entities;
-using Itmo.ObjectOrientedProgramming.Lab2.Services;
+using Itmo.ObjectOrientedProgramming.Lab2.Repository;
 using Itmo.ObjectOrientedProgramming.Lab2.Subject.Entities;
 using Itmo.ObjectOrientedProgramming.Lab2.User.Entities;
 using Xunit;
@@ -13,7 +13,12 @@ public class UniTests
     [Fact]
     public void FieldAccessTestCase()
     {
-        var plaform = new EducationalPlatform();
+        var userRepo = new DataRepository<IPlatformUser>();
+        var laboratoryRepo = new DataRepository<ILaboratoryWork>();
+        var lectureMaterialRepo = new DataRepository<ILectureMaterials>();
+        var subjectRepo = new DataRepository<ISubject>();
+        var educationProgramRepo = new DataRepository<IEducationProgram>();
+
         IPlatformUser user = new PlatformUser.UserBuilder().SetName("Name").Build();
         IPlatformUser user2 = new PlatformUser.UserBuilder().SetName("Name2").Build();
         ILaboratoryWork labWork = new LaboratoryWork.LabWorkBuilder().SetName("Name")
@@ -38,13 +43,13 @@ public class UniTests
             .AddSubject(subject2, 2)
             .SetName("Name")
             .Build();
-        plaform.AddUser(user);
-        plaform.AddLaboratoryWork(labWork);
-        plaform.AddLectureMaterials(lectureMaterials);
-        plaform.AddSubject(subject);
-        plaform.AddSubject(subject2);
-        plaform.AddEducationProgram(program);
-        plaform.AddUser(user2);
+        userRepo.Add(user);
+        laboratoryRepo.Add(labWork);
+        lectureMaterialRepo.Add(lectureMaterials);
+        subjectRepo.Add(subject);
+        subjectRepo.Add(subject2);
+        educationProgramRepo.Add(program);
+        userRepo.Add(user2);
         Assert.Throws<UnauthorizedAccessException>(() => labWork.ChangeName("New name", user2.Id));
         Assert.Throws<UnauthorizedAccessException>(() => lectureMaterials.ChangeName("New name", user2.Id));
         Assert.Throws<UnauthorizedAccessException>(() => subject2.ChangeName("New name", user2.Id));
@@ -55,7 +60,6 @@ public class UniTests
     [Fact]
     public void CloneTestCase()
     {
-        var plaform = new EducationalPlatform();
         IPlatformUser user = new PlatformUser.UserBuilder().SetName("Name").Build();
         ILaboratoryWork labWork = new LaboratoryWork.LabWorkBuilder().SetName("Name")
             .SetAuthorId(user.Id)
@@ -94,7 +98,6 @@ public class UniTests
     [Fact]
     public void SubjectPointsTestCase()
     {
-        var plaform = new EducationalPlatform();
         IPlatformUser user = new PlatformUser.UserBuilder().SetName("Name").Build();
         IPlatformUser user2 = new PlatformUser.UserBuilder().SetName("Name2").Build();
         ILaboratoryWork labWork = new LaboratoryWork.LabWorkBuilder().SetName("Name")

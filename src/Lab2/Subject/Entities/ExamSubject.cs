@@ -1,3 +1,4 @@
+using Itmo.ObjectOrientedProgramming.Lab2.Entity;
 using Itmo.ObjectOrientedProgramming.Lab2.LabWork.Entities;
 using Itmo.ObjectOrientedProgramming.Lab2.LectureMaterial.Entities;
 using Itmo.ObjectOrientedProgramming.Lab2.Subject.Models;
@@ -6,8 +7,6 @@ namespace Itmo.ObjectOrientedProgramming.Lab2.Subject.Entities;
 
 public class ExamSubject : ISubject
 {
-    private static int _nextId;
-
     public int Id { get; }
 
     public string Name { get; private set; } = string.Empty;
@@ -24,7 +23,7 @@ public class ExamSubject : ISubject
 
     private ExamSubject()
     {
-        Id = _nextId++;
+        Id = EntityCounter<ISubject>.Next();
     }
 
     public class ExamSubjectBuilder : ISubjectBuilder

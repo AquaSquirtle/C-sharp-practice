@@ -1,9 +1,9 @@
+using Itmo.ObjectOrientedProgramming.Lab2.Entity;
+
 namespace Itmo.ObjectOrientedProgramming.Lab2.LectureMaterial.Entities;
 
-public interface ILectureMaterials
+public interface ILectureMaterials : IEntity<ILectureMaterials>
 {
-    int Id { get; }
-
     string Name { get; }
 
     string ShortDescription { get; }

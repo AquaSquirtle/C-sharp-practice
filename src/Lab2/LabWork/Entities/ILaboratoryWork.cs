@@ -1,6 +1,8 @@
+using Itmo.ObjectOrientedProgramming.Lab2.Entity;
+
 namespace Itmo.ObjectOrientedProgramming.Lab2.LabWork.Entities;
 
-public interface ILaboratoryWork
+public interface ILaboratoryWork : IEntity<ILaboratoryWork>
 {
     string Name { get; }
 
@@ -11,8 +13,6 @@ public interface ILaboratoryWork
     int Points { get; }
 
     int AuthorId { get; }
-
-    int Id { get; }
 
     int? BaseLabWorkId { get; }
 

@@ -1,12 +1,11 @@
+using Itmo.ObjectOrientedProgramming.Lab2.Entity;
 using Itmo.ObjectOrientedProgramming.Lab2.LabWork.Entities;
 using Itmo.ObjectOrientedProgramming.Lab2.LectureMaterial.Entities;
 
 namespace Itmo.ObjectOrientedProgramming.Lab2.Subject.Entities;
 
-public interface ISubject
+public interface ISubject : IEntity<ISubject>
 {
-    int Id { get; }
-
     string Name { get; }
 
     int AuthorId { get; }

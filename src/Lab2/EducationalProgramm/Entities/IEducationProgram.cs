@@ -1,11 +1,10 @@
+using Itmo.ObjectOrientedProgramming.Lab2.Entity;
 using Itmo.ObjectOrientedProgramming.Lab2.Subject.Entities;
 
 namespace Itmo.ObjectOrientedProgramming.Lab2.EducationalProgramm.Entities;
 
-public interface IEducationProgram
+public interface IEducationProgram : IEntity<IEducationProgram>
 {
-    int Id { get; }
-
     string Name { get; }
 
     int AuthorId { get; }
