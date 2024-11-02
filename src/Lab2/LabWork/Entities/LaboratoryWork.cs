@@ -5,11 +5,11 @@ namespace Itmo.ObjectOrientedProgramming.Lab2.LabWork.Entities;
 
 public class LaboratoryWork : ILaboratoryWork
 {
-    public string Name { get; private set; } = string.Empty;
+    public string Name { get; private set; }
 
-    public string Description { get; private set; } = string.Empty;
+    public string Description { get; private set; }
 
-    public string EvaluationCriteria { get; private set; } = string.Empty;
+    public string EvaluationCriteria { get; private set; }
 
     public int Points { get; private set; }
 
@@ -19,88 +19,89 @@ public class LaboratoryWork : ILaboratoryWork
 
     public int Id { get; }
 
-    private LaboratoryWork()
+    public LaboratoryWork(string name, string description, string evaluationCriteria, int points, int authorId, int? baseLabWorkId = null)
     {
         Id = EntityCounter<ILaboratoryWork>.Next();
+        Name = name;
+        Description = description;
+        EvaluationCriteria = evaluationCriteria;
+        Points = points;
+        AuthorId = authorId;
+        BaseLabWorkId = baseLabWorkId;
     }
 
     public class LabWorkBuilder : ILabWorkBuilder
     {
-        private readonly LaboratoryWork _laboratoryWork = new LaboratoryWork();
+        private string _name = string.Empty;
+        private string _description = string.Empty;
+        private string _evaluationCriteria = string.Empty;
+        private int _points;
+        private int _authorId;
 
         public ILabWorkBuilder SetName(string name)
         {
-            _laboratoryWork.Name = name;
+            _name = name;
             return this;
         }
 
         public ILabWorkBuilder SetDescription(string description)
         {
-            _laboratoryWork.Description = description;
+            _description = description;
             return this;
         }
 
         public ILabWorkBuilder SetEvaluationCriteria(string evaluationCriteria)
         {
-            _laboratoryWork.EvaluationCriteria = evaluationCriteria;
+            _evaluationCriteria = evaluationCriteria;
             return this;
         }
 
         public ILabWorkBuilder SetAuthorId(int authorId)
         {
-            _laboratoryWork.AuthorId = authorId;
+            _authorId = authorId;
             return this;
         }
 
         public ILabWorkBuilder SetPoints(int points)
         {
-            _laboratoryWork.Points = points;
+            _points = points;
             return this;
         }
 
         public ILaboratoryWork Build()
         {
-            return _laboratoryWork;
+            return new LaboratoryWork(_name, _description, _evaluationCriteria, _points, _authorId);
         }
     }
 
     public ILaboratoryWork Clone()
     {
-        var clone = new LaboratoryWork
-        {
-            Name = this.Name,
-            Description = this.Description,
-            EvaluationCriteria = this.EvaluationCriteria,
-            Points = this.Points,
-            AuthorId = this.AuthorId,
-            BaseLabWorkId = this.Id,
-        };
-        return clone;
+        return new LaboratoryWork(Name, Description, EvaluationCriteria, Points, AuthorId, Id);
     }
 
-    public void ChangeName(string newName, int userId)
+    public bool TryChangeName(string newName, int userId)
     {
-        CheckAccessibility(userId);
+        if (!CheckAccessibility(userId)) return false;
         Name = newName;
+        return true;
     }
 
-    public void ChangeDescription(string newDescription, int userId)
+    public bool TryChangeDescription(string newDescription, int userId)
     {
-        CheckAccessibility(userId);
+        if (!CheckAccessibility(userId)) return false;
         Description = newDescription;
+        return true;
     }
 
-    public void ChangeEvaluationCriteria(string newCriteria, int userId)
+    public bool TryChangeEvaluationCriteria(string newCriteria, int userId)
     {
-        CheckAccessibility(userId);
+        if (!CheckAccessibility(userId)) return false;
         EvaluationCriteria = newCriteria;
+        return true;
     }
 
-    private void CheckAccessibility(int userId)
+    private bool CheckAccessibility(int userId)
     {
-        if (userId != AuthorId)
-        {
-            throw new UnauthorizedAccessException("User does not have access to this entity.");
-        }
+        return userId == AuthorId;
     }
 }

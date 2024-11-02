@@ -32,11 +32,11 @@ public class UniTests
         ISubject subject = new ExamSubject.ExamSubjectBuilder().SetName("Name")
             .SetAuthorId(user.Id)
             .SetPointsForExam(0)
-            .AddLabaratoryWork(labWork)
+            .AddLaboratoryWork(labWork)
             .Build();
         ISubject subject2 = new CreditSubject.CreditSubjectBuilder().SetName("Name")
             .SetAuthorId(user.Id)
-            .AddLabaratoryWork(labWork)
+            .AddLaboratoryWork(labWork)
             .Build();
         IEducationProgram program = new EducationProgram.EducationProgramBuilder().SetAuthorId(user.Id)
             .AddSubject(subject, 1)
@@ -50,11 +50,11 @@ public class UniTests
         subjectRepo.Add(subject2);
         educationProgramRepo.Add(program);
         userRepo.Add(user2);
-        Assert.Throws<UnauthorizedAccessException>(() => labWork.ChangeName("New name", user2.Id));
-        Assert.Throws<UnauthorizedAccessException>(() => lectureMaterials.ChangeName("New name", user2.Id));
-        Assert.Throws<UnauthorizedAccessException>(() => subject2.ChangeName("New name", user2.Id));
-        Assert.Throws<UnauthorizedAccessException>(() => subject.ChangeName("New name", user2.Id));
-        Assert.Throws<UnauthorizedAccessException>(() => program.ChangeName("New name", user2.Id));
+        Assert.False(labWork.TryChangeName("New name", user2.Id));
+        Assert.False(lectureMaterials.TryChangeName("New name", user2.Id));
+        Assert.False(subject2.TryChangeName("New name", user2.Id));
+        Assert.False(subject.TryChangeName("New name", user2.Id));
+        Assert.False(program.TryChangeName("New name", user2.Id));
     }
 
     [Fact]
@@ -72,11 +72,11 @@ public class UniTests
         ISubject subject = new ExamSubject.ExamSubjectBuilder().SetName("Name")
             .SetAuthorId(user.Id)
             .SetPointsForExam(0)
-            .AddLabaratoryWork(labWork)
+            .AddLaboratoryWork(labWork)
             .Build();
         ISubject subject2 = new CreditSubject.CreditSubjectBuilder().SetName("Name")
             .SetAuthorId(user.Id)
-            .AddLabaratoryWork(labWork)
+            .AddLaboratoryWork(labWork)
             .Build();
         IEducationProgram program = new EducationProgram.EducationProgramBuilder().SetAuthorId(user.Id)
             .AddSubject(subject, 1)
@@ -111,10 +111,10 @@ public class UniTests
         ExamSubject.ExamSubjectBuilder subject = new ExamSubject.ExamSubjectBuilder().SetName("Name")
             .SetAuthorId(user.Id)
             .SetPointsForExam(30)
-            .AddLabaratoryWork(labWork2);
+            .AddLaboratoryWork(labWork2);
         CreditSubject.CreditSubjectBuilder subject2 = new CreditSubject.CreditSubjectBuilder().SetName("Name")
             .SetAuthorId(user.Id)
-            .AddLabaratoryWork(labWork);
+            .AddLaboratoryWork(labWork);
         Assert.Throws<InvalidOperationException>(() => subject.Build());
     }
 }

@@ -14,11 +14,11 @@ public interface ILectureMaterials : IEntity<ILectureMaterials>
 
     int? BaseLectureMaterialId { get; }
 
-    void ChangeName(string newName, int userId);
+    bool TryChangeName(string newName, int userId);
 
-    void ChangeShortDescription(string newShortDescription, int userId);
+    bool TryChangeShortDescription(string newShortDescription, int userId);
 
-    void ChangeContent(string newContent, int userId);
+    bool TryChangeContent(string newContent, int userId);
 
     ILectureMaterials Clone();
 }

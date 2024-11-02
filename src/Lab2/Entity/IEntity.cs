@@ -5,8 +5,10 @@ public interface IEntity<T>
     int Id { get; }
 }
 
-public static class EntityCounter<T>
+public sealed class EntityCounter<T>
 {
+    private EntityCounter() { }
+
     private static int counter = 0;
 
     public static int Next() => counter++;

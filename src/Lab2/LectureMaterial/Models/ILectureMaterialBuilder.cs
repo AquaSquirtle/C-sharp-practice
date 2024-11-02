@@ -4,13 +4,13 @@ namespace Itmo.ObjectOrientedProgramming.Lab2.LectureMaterial.Models;
 
 public interface ILectureMaterialBuilder
 {
-    public ILectureMaterials Build();
+    ILectureMaterials Build();
 
-    public ILectureMaterialBuilder SetName(string name);
+    ILectureMaterialBuilder SetName(string name);
 
-    public ILectureMaterialBuilder SetShortDescription(string shortDescription);
+    ILectureMaterialBuilder SetShortDescription(string shortDescription);
 
-    public ILectureMaterialBuilder SetContent(string content);
+    ILectureMaterialBuilder SetContent(string content);
 
-    public ILectureMaterialBuilder SetAuthorId(int id);
+    ILectureMaterialBuilder SetAuthorId(int id);
 }

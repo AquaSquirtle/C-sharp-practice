@@ -7,92 +7,91 @@ public class LectureMaterials : ILectureMaterials
 {
     public int Id { get; }
 
-    public string Name { get; private set; } = string.Empty;
+    public string Name { get; private set; }
 
-    public string ShortDescription { get; private set; } = string.Empty;
+    public string ShortDescription { get; private set; }
 
-    public string Content { get; private set; } = string.Empty;
+    public string Content { get; private set; }
 
     public int AuthorId { get; private set; }
 
     public int? BaseLectureMaterialId { get; private set; }
 
-    private LectureMaterials()
+    public LectureMaterials(string name, string shortDescription, string content, int authorId, int? baseLectureMaterialId = null)
     {
         Id = EntityCounter<ILectureMaterials>.Next();
+        Name = name;
+        ShortDescription = shortDescription;
+        Content = content;
+        AuthorId = authorId;
+        BaseLectureMaterialId = baseLectureMaterialId;
     }
 
     public class LectureMaterialBuilder : ILectureMaterialBuilder
     {
-        private readonly LectureMaterials _lectureMaterials = new LectureMaterials();
+        private string _name = string.Empty;
+        private string _shortDescription = string.Empty;
+        private string _content = string.Empty;
+        private int _authorId;
 
         public ILectureMaterials Build()
         {
-            return _lectureMaterials;
+            return new LectureMaterials(_name, _shortDescription, _content, _authorId);
         }
 
         public ILectureMaterialBuilder SetName(string name)
         {
-            _lectureMaterials.Name = name;
+            _name = name;
             return this;
         }
 
         public ILectureMaterialBuilder SetShortDescription(string shortDescription)
         {
-            _lectureMaterials.ShortDescription = shortDescription;
+            _shortDescription = shortDescription;
             return this;
         }
 
         public ILectureMaterialBuilder SetContent(string content)
         {
-            _lectureMaterials.Content = content;
+            _content = content;
             return this;
         }
 
         public ILectureMaterialBuilder SetAuthorId(int id)
         {
-            _lectureMaterials.AuthorId = id;
+            _authorId = id;
             return this;
         }
     }
 
     public ILectureMaterials Clone()
     {
-        var clone = new LectureMaterials
-        {
-            Name = this.Name,
-            ShortDescription = this.ShortDescription,
-            Content = this.Content,
-            AuthorId = this.AuthorId,
-            BaseLectureMaterialId = this.Id,
-        };
-
-        return clone;
+        return new LectureMaterials(Name, ShortDescription, Content, AuthorId, Id);
     }
 
-    public void ChangeName(string newName, int userId)
+    public bool TryChangeName(string newName, int userId)
     {
-        CheckAccessibility(userId);
+        if (!CheckAccessibility(userId)) return false;
         Name = newName;
+        return true;
     }
 
-    public void ChangeShortDescription(string newShortDescription, int userId)
+    public bool TryChangeShortDescription(string newShortDescription, int userId)
     {
-        CheckAccessibility(userId);
+        if (!CheckAccessibility(userId)) return false;
         ShortDescription = newShortDescription;
+        return true;
     }
 
-    public void ChangeContent(string newContent, int userId)
+    public bool TryChangeContent(string newContent, int userId)
     {
-        CheckAccessibility(userId);
+        if (!CheckAccessibility(userId)) return false;
         Content = newContent;
+        return true;
     }
 
-    private void CheckAccessibility(int userId)
+    private bool CheckAccessibility(int userId)
     {
-        if (userId != AuthorId)
-        {
-            throw new UnauthorizedAccessException("User does not have access to this entity.");
-        }
+        return userId == AuthorId;
     }
 }

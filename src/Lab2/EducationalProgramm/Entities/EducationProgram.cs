@@ -8,28 +8,31 @@ public class EducationProgram : IEducationProgram
 {
     public int Id { get; }
 
-    public string Name { get; private set; } = string.Empty;
+    public string Name { get; private set;  } = string.Empty;
 
-    public int AuthorId { get; private set; }
+    public int AuthorId { get; private set;  }
 
-    private readonly ICollection<Semester> semesters = [];
+    private readonly ICollection<Semester> _semesters = [];
 
     public int? BaseEducationalProgramId { get; private set; }
 
-    private EducationProgram()
+    public EducationProgram(string name, int authorId, int? baseEducationalProgramId = null)
     {
+        Name = name;
+        AuthorId = authorId;
         Id = EntityCounter<IEducationProgram>.Next();
+        BaseEducationalProgramId = baseEducationalProgramId;
     }
 
     public void AddSubject(ISubject subject, int semesterId, int userId)
     {
         CheckAccessibility(userId);
-        Semester? semester = semesters.FirstOrDefault(semester => semester.SemestrNumber == semesterId);
+        Semester? semester = _semesters.FirstOrDefault(semester => semester.SemestrNumber == semesterId);
         if (semester == null)
         {
             var newSemester = new Semester(semesterId);
             newSemester.Subjects.Add(subject);
-            semesters.Add(newSemester);
+            _semesters.Add(newSemester);
         }
         else
         {
@@ -46,11 +49,11 @@ public class EducationProgram : IEducationProgram
             BaseEducationalProgramId = this.Id,
         };
 
-        foreach (Semester semester in semesters)
+        foreach (Semester semester in _semesters)
         {
             foreach (ISubject subject in semester.Subjects)
             {
-                clone.AddSubject(subject, semester.SemestrNumber, clone.AuthorId);
+                clone.AddSubject(subject.Clone(), semester.SemestrNumber, clone.AuthorId);
             }
         }
 
@@ -59,43 +62,70 @@ public class EducationProgram : IEducationProgram
 
     public class EducationProgramBuilder : IEducationalProgramBuilder
     {
-        private readonly EducationProgram _program = new EducationProgram();
+        private readonly List<Semester> _semesters = new List<Semester>();
+        private string _name = string.Empty;
+        private int _authorId;
 
         public IEducationProgram Build()
         {
-            return _program;
+            var program = new EducationProgram(_name, _authorId);
+
+            foreach (Semester semester in _semesters)
+            {
+                foreach (ISubject subject in semester.Subjects)
+                {
+                    program.AddSubject(subject, semester.SemestrNumber, program.AuthorId);
+                }
+            }
+
+            return program;
         }
 
         public IEducationalProgramBuilder SetName(string name)
         {
-            _program.Name = name;
+            _name = name;
             return this;
         }
 
         public IEducationalProgramBuilder AddSubject(ISubject subject, int semesterId)
         {
-            _program.AddSubject(subject, semesterId, _program.AuthorId);
+            Semester? semester = _semesters.FirstOrDefault(semester => semester.SemestrNumber == semesterId);
+            if (semester == null)
+            {
+                var newSemester = new Semester(semesterId);
+                newSemester.Subjects.Add(subject);
+                _semesters.Add(newSemester);
+            }
+            else
+            {
+                semester.Subjects.Add(subject);
+            }
+
             return this;
         }
 
         public IEducationalProgramBuilder SetAuthorId(int authorId)
         {
-            _program.AuthorId = authorId;
+            _authorId = authorId;
             return this;
         }
     }
 
-    public void ChangeName(string newName, int userId)
+    public bool TryChangeName(string newName, int userId)
     {
-        CheckAccessibility(userId);
+        if (!CheckAccessibility(userId))
+        {
+            return false;
+        }
+
         Name = newName;
+        return true;
     }
 
-    private void CheckAccessibility(int userId)
+    private bool CheckAccessibility(int userId)
     {
-        if (userId != AuthorId)
-        {
-            throw new UnauthorizedAccessException("User does not have access to this entity.");
-        }
+        return userId == AuthorId;
     }
+
+    private EducationProgram() { }
 }

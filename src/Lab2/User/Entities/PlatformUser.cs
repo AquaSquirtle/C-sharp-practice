@@ -7,7 +7,13 @@ public class PlatformUser : IPlatformUser
 {
     public int Id { get; private set; }
 
-    public string Name { get; private set; } = "Undefined";
+    public string Name { get; private set; } = string.Empty;
+
+    public PlatformUser(string name)
+    {
+        Id = EntityCounter<IPlatformUser>.Next();
+        Name = name;
+    }
 
     private PlatformUser()
     {
@@ -16,17 +22,17 @@ public class PlatformUser : IPlatformUser
 
     public class UserBuilder : IUserBuilder
     {
-        private readonly PlatformUser _platformUser = new PlatformUser();
+        private string _name = string.Empty;
 
         public IUserBuilder SetName(string name)
         {
-            _platformUser.Name = name;
+            _name = name;
             return this;
         }
 
         public IPlatformUser Build()
         {
-            return _platformUser;
+            return new PlatformUser(_name);
         }
     }
 }

@@ -11,8 +11,8 @@ public class DataRepository<T> where T : IEntity<T>
         Entities.Add(entity);
     }
 
-    public T GetById(int id)
+    public T? FindById(int id)
     {
-        return Entities.FirstOrDefault(e => e.Id == id) ?? throw new KeyNotFoundException("Entity not found");
+        return Entities.FirstOrDefault(e => e.Id == id);
     }
 }

@@ -16,11 +16,11 @@ public interface ILaboratoryWork : IEntity<ILaboratoryWork>
 
     int? BaseLabWorkId { get; }
 
-    void ChangeName(string newName, int userId);
+    bool TryChangeName(string newName, int userId);
 
-    void ChangeDescription(string newDescription, int userId);
+    bool TryChangeDescription(string newDescription, int userId);
 
-    void ChangeEvaluationCriteria(string newCriteria, int userId);
+    bool TryChangeEvaluationCriteria(string newCriteria, int userId);
 
     ILaboratoryWork Clone();
 }

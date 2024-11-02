@@ -15,5 +15,5 @@ public interface IEducationProgram : IEntity<IEducationProgram>
 
     IEducationProgram Clone();
 
-    void ChangeName(string newName, int userId);
+    bool TryChangeName(string newName, int userId);
 }

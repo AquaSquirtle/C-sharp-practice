@@ -9,7 +9,7 @@ public class ExamSubject : ISubject
 {
     public int Id { get; }
 
-    public string Name { get; private set; } = string.Empty;
+    public string Name { get; private set; }
 
     public int PointsForExam { get; private set; }
 
@@ -17,117 +17,125 @@ public class ExamSubject : ISubject
 
     public int? BaseSubjectId { get; private set; }
 
-    private readonly List<ILaboratoryWork> _labWorks = [];
+    private readonly List<ILaboratoryWork> _labWorks = new();
 
-    private readonly List<ILectureMaterials> _lectureMaterials = [];
+    private readonly List<ILectureMaterials> _lectureMaterials = new();
 
-    private ExamSubject()
+    public ExamSubject(string name, int pointsForExam, int authorId, int? baseSubjectId = null)
     {
         Id = EntityCounter<ISubject>.Next();
+        Name = name;
+        PointsForExam = pointsForExam;
+        AuthorId = authorId;
+        BaseSubjectId = baseSubjectId;
     }
 
     public class ExamSubjectBuilder : ISubjectBuilder
     {
-        private readonly ExamSubject _subject = new ExamSubject();
+        private readonly List<ILaboratoryWork> _labWorks = new();
+        private readonly List<ILectureMaterials> _lectureMaterials = new();
+        private string _name = string.Empty;
+        private int _pointsForExam;
+        private int _authorId;
 
         public ExamSubjectBuilder SetName(string name)
         {
-            _subject.Name = name;
+            _name = name;
             return this;
         }
 
-        public ExamSubjectBuilder SetPointsForExam(int minPoints)
+        public ExamSubjectBuilder SetPointsForExam(int pointsForExam)
         {
-            _subject.PointsForExam = minPoints;
+            _pointsForExam = pointsForExam;
             return this;
         }
 
         public ExamSubjectBuilder SetAuthorId(int id)
         {
-            _subject.AuthorId = id;
+            _authorId = id;
             return this;
         }
 
-        public ExamSubjectBuilder AddLabaratoryWork(ILaboratoryWork laboratoryWork)
+        public ExamSubjectBuilder AddLaboratoryWork(ILaboratoryWork laboratoryWork)
         {
-            _subject.AddLabWork(laboratoryWork, _subject.AuthorId);
+            _labWorks.Add(laboratoryWork);
             return this;
         }
 
         public ExamSubjectBuilder AddLectureMaterial(ILectureMaterials lectureMaterials)
         {
-            _subject.AddLectureMaterial(lectureMaterials, _subject.AuthorId);
+            _lectureMaterials.Add(lectureMaterials);
             return this;
         }
 
         public ISubject Build()
         {
-            if (!_subject.CheckAmountOfPoints())
+            var subject = new ExamSubject(_name, _pointsForExam, _authorId);
+
+            foreach (ILaboratoryWork lab in _labWorks)
+            {
+                subject._labWorks.Add(lab);
+            }
+
+            foreach (ILectureMaterials lectureMaterial in _lectureMaterials)
+            {
+                subject._lectureMaterials.Add(lectureMaterial);
+            }
+
+            if (!subject.CheckAmountOfPoints())
             {
                 throw new InvalidOperationException("The exam subject must have 100 points.");
             }
 
-            return _subject;
+            return subject;
         }
     }
 
     public bool CheckAmountOfPoints()
     {
-        int points = PointsForExam;
-
-        foreach (ILaboratoryWork lab in _labWorks)
-        {
-            points += lab.Points;
-        }
-
+        int points = PointsForExam + _labWorks.Sum(lab => lab.Points);
         return points == 100;
     }
 
-    public void AddLabWork(ILaboratoryWork laboratoryWork, int userId)
+    public bool TryAddLabWork(ILaboratoryWork laboratoryWork, int userId)
     {
-        CheckAccessibility(userId);
+        if (!CheckAccessibility(userId)) return false;
         _labWorks.Add(laboratoryWork);
+        return true;
     }
 
-    public void AddLectureMaterial(ILectureMaterials lectureMaterials, int userId)
+    public bool TryAddLectureMaterial(ILectureMaterials lectureMaterials, int userId)
     {
-        CheckAccessibility(userId);
+        if (!CheckAccessibility(userId)) return false;
         _lectureMaterials.Add(lectureMaterials);
+        return true;
     }
 
     public ISubject Clone()
     {
-        var clone = new ExamSubject
-        {
-            Name = this.Name,
-            PointsForExam = this.PointsForExam,
-            AuthorId = this.AuthorId,
-            BaseSubjectId = this.Id,
-        };
+        var clone = new ExamSubject(Name, PointsForExam, AuthorId, Id);
         foreach (ILaboratoryWork lab in _labWorks)
         {
-            clone.AddLabWork(lab, clone.AuthorId);
+            clone._labWorks.Add(lab);
         }
 
         foreach (ILectureMaterials lectureMaterial in _lectureMaterials)
         {
-            clone.AddLectureMaterial(lectureMaterial, clone.AuthorId);
+            clone._lectureMaterials.Add(lectureMaterial);
         }
 
         return clone;
     }
 
-    public void ChangeName(string newName, int userId)
+    public bool TryChangeName(string newName, int userId)
     {
-        CheckAccessibility(userId);
+        if (!CheckAccessibility(userId)) return false;
         Name = newName;
+        return true;
     }
 
-    private void CheckAccessibility(int userId)
+    private bool CheckAccessibility(int userId)
     {
-        if (userId != AuthorId)
-        {
-            throw new UnauthorizedAccessException("User does not have access to this entity.");
-        }
+        return userId == AuthorId;
     }
 }

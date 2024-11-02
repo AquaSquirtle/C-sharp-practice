@@ -14,11 +14,11 @@ public interface ISubject : IEntity<ISubject>
 
     bool CheckAmountOfPoints();
 
-    void AddLabWork(ILaboratoryWork laboratoryWork, int userId);
+    bool TryAddLabWork(ILaboratoryWork laboratoryWork, int userId);
 
-    void AddLectureMaterial(ILectureMaterials lectureMaterials, int userId);
+    bool TryAddLectureMaterial(ILectureMaterials lectureMaterials, int userId);
 
-    void ChangeName(string newName, int userId);
+    bool TryChangeName(string newName, int userId);
 
     ISubject Clone();
 }
