@@ -15,7 +15,7 @@ public class DisplayAdapter : IEndPoint
         _display = display;
     }
 
-    public bool ReceiveMessage(Message message)
+    public bool TryReceiveMessage(Message message)
     {
         _display.ReceiveMessage(message.Body);
         return true;

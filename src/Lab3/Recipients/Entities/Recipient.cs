@@ -18,6 +18,6 @@ public class Recipient : IRecipient
 
     public bool TrySendMessage(Message message)
     {
-        return _endPoint.ReceiveMessage(message);
+        return _endPoint.TryReceiveMessage(message);
     }
 }

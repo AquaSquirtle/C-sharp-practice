@@ -75,7 +75,7 @@ public class MessagesTests
         var recipient = new Recipient(user.Object);
         var filterRecipient = new RecipientFilterDecorator(recipient, Priority.High);
         filterRecipient.TrySendMessage(message);
-        user.Verify(u => u.ReceiveMessage(It.Is<Message>(m => m.Priority < Priority.High)), Times.Never);
+        user.Verify(u => u.TryReceiveMessage(It.Is<Message>(m => m.Priority < Priority.High)), Times.Never);
     }
 
     [Fact]
@@ -136,6 +136,6 @@ public class MessagesTests
         var filterRecipient2 = new RecipientFilterDecorator(recipient, Priority.Low);
         filterRecipient.TrySendMessage(message);
         filterRecipient2.TrySendMessage(message);
-        user.Verify(u => u.ReceiveMessage(It.Is<Message>(m => m.Priority < Priority.High)), Times.Once);
+        user.Verify(u => u.TryReceiveMessage(It.Is<Message>(m => m.Priority < Priority.High)), Times.Once);
     }
 }

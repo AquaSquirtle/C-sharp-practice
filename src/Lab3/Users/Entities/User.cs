@@ -16,7 +16,7 @@ public class User : IEndPoint
         Name = name;
     }
 
-    public bool ReceiveMessage(Message message)
+    public bool TryReceiveMessage(Message message)
     {
         _messages.Add(message);
         _messageStatus.Add(message.MessageId, MessageStatus.Unread);

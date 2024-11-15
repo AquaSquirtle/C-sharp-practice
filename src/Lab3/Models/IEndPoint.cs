@@ -6,5 +6,5 @@ public interface IEndPoint
 {
     string Name { get; }
 
-    bool ReceiveMessage(Message message);
+    bool TryReceiveMessage(Message message);
 }

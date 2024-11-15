@@ -15,7 +15,7 @@ public class MessengerAdapter : IEndPoint
         _messenger = messenger;
     }
 
-    public bool ReceiveMessage(Message message)
+    public bool TryReceiveMessage(Message message)
     {
         _messenger.ReceiveMessage(message.Body);
         return true;
