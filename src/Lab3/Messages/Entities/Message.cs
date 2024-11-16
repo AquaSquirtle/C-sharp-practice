@@ -13,7 +13,7 @@ public class Message
 
     public Priority Priority { get; }
 
-    public Message(string header, string body, Priority priority = Priority.Normal)
+    private Message(string header, string body, Priority priority = Priority.Normal)
     {
         MessageId = EntityCounter<Message>.Next();
         Header = header;

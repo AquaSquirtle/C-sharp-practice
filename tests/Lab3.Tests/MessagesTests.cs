@@ -1,10 +1,10 @@
+using Itmo.ObjectOrientedProgramming.Lab3.Loggers;
 using Itmo.ObjectOrientedProgramming.Lab3.Messages.Entities;
 using Itmo.ObjectOrientedProgramming.Lab3.Messages.Models;
 using Itmo.ObjectOrientedProgramming.Lab3.Messengers.Entities;
 using Itmo.ObjectOrientedProgramming.Lab3.Messengers.Models;
 using Itmo.ObjectOrientedProgramming.Lab3.Models;
 using Itmo.ObjectOrientedProgramming.Lab3.Recipients.Entities;
-using Itmo.ObjectOrientedProgramming.Lab3.Recipients.Models;
 using Itmo.ObjectOrientedProgramming.Lab3.Users.Entities;
 using Itmo.ObjectOrientedProgramming.Lab3.Users.Models;
 using Moq;
@@ -73,7 +73,7 @@ public class MessagesTests
             .Build();
         var user = new Mock<IEndPoint>();
         var recipient = new Recipient(user.Object);
-        var filterRecipient = new RecipientFilterDecorator(recipient, Priority.High);
+        var filterRecipient = new RecipientFilterProxy(recipient, Priority.High);
         filterRecipient.TrySendMessage(message);
         user.Verify(u => u.TryReceiveMessage(It.Is<Message>(m => m.Priority < Priority.High)), Times.Never);
     }
@@ -81,28 +81,18 @@ public class MessagesTests
     [Fact]
     public void LogMessageTest()
     {
-        var stringWriter = new StringWriter();
-        Console.SetOut(stringWriter);
-
         Message message = _messagBuilder
             .BuildHeader("Message")
             .BuildBody("Message text")
             .BuildPriority(Priority.Low)
             .Build();
-        var recipient = new Mock<IRecipient>();
-        recipient.Setup(r => r.TrySendMessage(It.IsAny<Message>())).Returns(true);
-        recipient.SetupGet(r => r.Name).Returns("Name");
-
-        var recipientLogger = new RecipientLogDecorator(recipient.Object);
+        var user = new User("Name");
+        var logger = new Mock<ILogger>();
+        var recipient = new Recipient(user);
+        var recipientLogger = new RecipientLogDecorator(recipient, logger.Object);
         recipientLogger.TrySendMessage(message);
 
-        string result = stringWriter.ToString();
-
-        Assert.Contains(
-            $"Message {message.MessageId} has been delivered to {recipient.Object.Name}",
-            result,
-            StringComparison.Ordinal);
-        Console.SetOut(new StreamWriter(Console.OpenStandardOutput()) { AutoFlush = true });
+        logger.Verify(l => l.Log(It.IsAny<string>()), Times.Once);
     }
 
     [Fact]
@@ -132,8 +122,8 @@ public class MessagesTests
             .Build();
         var user = new Mock<IEndPoint>();
         var recipient = new Recipient(user.Object);
-        var filterRecipient = new RecipientFilterDecorator(recipient, Priority.High);
-        var filterRecipient2 = new RecipientFilterDecorator(recipient, Priority.Low);
+        var filterRecipient = new RecipientFilterProxy(recipient, Priority.High);
+        var filterRecipient2 = new RecipientFilterProxy(recipient, Priority.Low);
         filterRecipient.TrySendMessage(message);
         filterRecipient2.TrySendMessage(message);
         user.Verify(u => u.TryReceiveMessage(It.Is<Message>(m => m.Priority < Priority.High)), Times.Once);

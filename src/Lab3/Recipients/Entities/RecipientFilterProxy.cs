@@ -4,14 +4,14 @@ using Itmo.ObjectOrientedProgramming.Lab3.Recipients.Models;
 
 namespace Itmo.ObjectOrientedProgramming.Lab3.Recipients.Entities;
 
-public class RecipientFilterDecorator : IRecipient
+public class RecipientFilterProxy : IRecipient
 {
     private readonly IRecipient _recipient;
     private readonly Priority _priority;
 
     public string Name { get; }
 
-    public RecipientFilterDecorator(IRecipient recipient, Priority priority)
+    public RecipientFilterProxy(IRecipient recipient, Priority priority)
     {
         _recipient = recipient;
         _priority = priority;
