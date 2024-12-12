@@ -1,0 +1,6 @@
+﻿services:
+  lab5:
+    image: lab5
+    build:
+      context: .
+      dockerfile: src/Lab5/Dockerfile
