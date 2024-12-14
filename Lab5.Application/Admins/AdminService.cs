@@ -1,5 +1,7 @@
 using Itmo.ObjectOrientedProgramming.Lab5.Application.Abstractions.Repositories;
 using Itmo.ObjectOrientedProgramming.Lab5.Application.Services.Admins;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace Itmo.ObjectOrientedProgramming.Lab5.Application.Admins;
 
@@ -17,7 +19,11 @@ public class AdminService : IAdminService
 
     public AdminServiceResult VerifyPassword(string password)
     {
-        if (!_repository.GetSystemPassword().Equals(password, StringComparison.Ordinal))
+        var sha256 = SHA256.Create();
+        byte[] hashBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(password));
+        string pass = Convert.ToBase64String(hashBytes);
+
+        if (!_repository.GetSystemPassword().Equals(pass, StringComparison.Ordinal))
         {
             return new AdminServiceResult.WrongPassword();
         }
@@ -29,7 +35,10 @@ public class AdminService : IAdminService
 
     public AdminServiceResult SetPassword(string newPassword)
     {
-        _repository.SetSystemPassword(newPassword);
+        var sha256 = SHA256.Create();
+        byte[] hashBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(newPassword));
+        string pass = Convert.ToBase64String(hashBytes);
+        _repository.SetSystemPassword(pass);
         return new AdminServiceResult.Success();
     }
 }

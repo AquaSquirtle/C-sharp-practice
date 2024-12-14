@@ -15,7 +15,7 @@ public class AdminRepository : IAdminRepository
 
     public string GetSystemPassword()
     {
-        const string sql = "SELECT password FROM admin";
+        const string sql = "SELECT password FROM admin WHERE id = 1";
         NpgsqlConnection connection = _connectionProvider
             .GetConnectionAsync(default)
             .AsTask()
@@ -28,7 +28,7 @@ public class AdminRepository : IAdminRepository
 
     public void SetSystemPassword(string password)
     {
-        const string sql = "UPDATE admin SET password = @password WHERE id = TRUE";
+        const string sql = "UPDATE admin SET password = @password WHERE id = 1";
         using NpgsqlConnection connection = _connectionProvider
             .GetConnectionAsync(default)
             .AsTask()

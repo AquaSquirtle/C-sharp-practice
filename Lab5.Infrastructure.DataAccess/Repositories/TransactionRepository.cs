@@ -36,7 +36,7 @@ public class TransactionRepository : ITransactionRepository
 
     public void AddTransaction(int checkNumber, string transaction)
     {
-        const string sql = "INSERT INTO transactions (number, transaction_type) VALUES (@checkNumber, @transaction)";
+        const string sql = "INSERT INTO transactions (check_number, transaction_type) VALUES (@checkNumber, @transaction)";
         using NpgsqlConnection connection = _connectionProvider
             .GetConnectionAsync(default)
             .AsTask()

@@ -16,7 +16,7 @@ public class CheckRepository : ICheckRepository
 
     public Check? FindCheckByNumber(int number)
     {
-        const string sql = "SELECT * FROM checks WHERE number = @number";
+        const string sql = "SELECT * FROM checks WHERE check_number = @number";
         using NpgsqlConnection connection = _connectionProvider
             .GetConnectionAsync(default)
             .AsTask()
@@ -26,14 +26,14 @@ public class CheckRepository : ICheckRepository
         command.Parameters.AddWithValue("@number", number);
         NpgsqlDataReader result = command.ExecuteReader();
         return result.Read() ? new Check(
+            result.GetInt32(0),
             result.GetInt32(1),
-            result.GetInt32(2),
-            result.GetDecimal(3)) : null;
+            result.GetDecimal(2)) : null;
     }
 
     public void CreateCheck(int number, int pin)
     {
-        const string sql = "INSERT INTO checks (number, pin) VALUES (@number, @pin)";
+        const string sql = "INSERT INTO checks (check_number, pin) VALUES (@number, @pin)";
         using NpgsqlConnection connection = _connectionProvider
             .GetConnectionAsync(default)
             .AsTask()
@@ -47,7 +47,7 @@ public class CheckRepository : ICheckRepository
 
     public void UpdateCheckMoney(int checkNumber, decimal money)
     {
-        const string sql = "UPDATE checks SET balance = @balance WHERE number = @number";
+        const string sql = "UPDATE checks SET balance = @balance WHERE check_number = @number";
         using NpgsqlConnection connection = _connectionProvider
             .GetConnectionAsync(default)
             .AsTask()
